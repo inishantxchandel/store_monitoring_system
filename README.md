@@ -45,6 +45,49 @@ To effectively deploy the Store Monitoring API, the following system requirement
 - **Report Generation**: Report generation should consider business hours and extrapolate uptime and downtime accurately.
 - **Data Updates**: The system should handle ongoing data updates seamlessly.
 
+## Downtime and Uptime Calculation
+
+The Store Monitoring API calculates downtime and uptime for each store based on the provided store activity data and business hours. The goal is to determine how much time a store was online (uptime) and how much time it was offline (downtime) during its designated business hours.
+
+### `calculate_uptime_downtime` Function
+
+The `calculate_uptime_downtime` function is responsible for this calculation. Here's how it works:
+
+1. **Initialization**: It initializes `uptime_minutes` and `downtime_minutes` to zero.
+
+2. **Interval Iteration**: The function iterates through 15-minute intervals within the store's business hours. It starts from the `business_hours_start` time and continues until the `business_hours_end` time.
+
+3. **Activity Check**: Within each 15-minute interval, the function checks if there is any activity data recorded. It considers the interval as "uptime" if there is activity with a "status" of "active." Otherwise, it considers the interval as "downtime."
+
+4. **Uptime and Downtime Calculation**: The function increments either `uptime_minutes` or `downtime_minutes` based on whether there is activity or not. Each 15-minute interval contributes to either uptime or downtime.
+
+5. **Return Values**: After iterating through all intervals, the function returns the total `uptime_minutes` and `downtime_minutes`.
+
+### Report Data
+
+The calculated `uptime_minutes` and `downtime_minutes` are used to populate the report data for each store. The report data includes the following fields:
+
+- `store_id`: The unique identifier of the store.
+- `uptime_last_hour`: The total uptime in minutes for the last hour.
+- `uptime_last_day`: The total uptime in hours for the last day.
+- `uptime_last_week`: The total uptime in hours for the last week.
+- `downtime_last_hour`: The total downtime in minutes for the last hour.
+- `downtime_last_day`: The total downtime in hours for the last day.
+- `downtime_last_week`: The total downtime in hours for the last week.
+
+These fields provide a comprehensive overview of a store's online and offline status over different time intervals.
+
+### Example
+
+For example, if a store has the following activity data within its business hours:
+
+- Uptime (active) for 2 hours and 15 minutes
+- Downtime (not active) for 45 minutes
+
+The `calculate_uptime_downtime` function would return `uptime_minutes` as 135 (2 hours and 15 minutes) and `downtime_minutes` as 45 (45 minutes).
+
+These values would then be included in the report data for that store, which can be accessed using the API endpoints.
+
 ## API Requirements
 
 The system offers two primary APIs:
