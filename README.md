@@ -1,4 +1,4 @@
-# Create database locally for linnux
+# Create database locally for linux
 ## Init Postgresql
 
 1. Login postgres\
